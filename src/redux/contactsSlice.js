@@ -17,17 +17,9 @@ const contactsSlice = createSlice({
     ],
     filter: '',
   },
-  reducers: {
-    addContact(state, action) {      
-      const { name } = state.contacts;
-
-      const checkDuplicateContact = state.contacts.some(addContact =>
-          (addContact.name.toLocaleLowerCase() === name.toLocaleLowerCase())
-        );
-
-      checkDuplicateContact
-        ? alert(`${name.toUpperCase()} is already in contacts`)
-        : state.contacts.unshift(action.payload);
+  reducers: {    
+    addContact(state, action) {
+      state.contacts.unshift(action.payload);
     },
 
     delContact(state, action) {      

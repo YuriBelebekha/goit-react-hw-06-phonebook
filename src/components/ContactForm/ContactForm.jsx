@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts, addContact } from '../../redux/contactsSlice';
+import shortid from 'shortid';
 import css from './ContactForm.module.css';
 
-function ContactForm({ onSubmit }) {
+function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
 
   const handleChange = e => {
     const { name, value } = e.currentTarget;
@@ -25,7 +29,20 @@ function ContactForm({ onSubmit }) {
 
   const handleSubmit = e => {
     e.preventDefault();    
-    onSubmit({ name, number });
+    const contact = {
+      id: shortid.generate(),
+      name,
+      number,
+    };
+
+    const checkDuplicateContact = contacts.some(contact =>      
+      contact.name.toLocaleLowerCase() === name.toLocaleLowerCase()
+    );
+
+    checkDuplicateContact
+      ? alert(`${name.toUpperCase()} is already in contacts`)
+      : dispatch(addContact(contact));    
+
     setName('');
     setNumber('');
   };
@@ -66,8 +83,3 @@ function ContactForm({ onSubmit }) {
 }
 
 export default ContactForm;
-
-ContactForm.propTypes = {
-  name: PropTypes.string,
-  number: PropTypes.string,
-};
